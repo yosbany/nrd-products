@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NUEVA RíO D'OR - Gestión de Productos</title>
+    <!-- Incluir Tailwind CSS mediante Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuración de Tailwind CSS -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1D4ED8',   // Azul
+                        secondary: '#9333EA', // Morado
+                        accent: '#10B981',    // Verde
+                        light: '#F3F4F6',     // Gris claro para fondos
+                        darkBg: '#1F2937',    // Gris oscuro (si decides mantenerlo)
+                    },
+                    fontFamily: {
+                        sans: ['Roboto', 'sans-serif'], // Fuente personalizada
+                    },
+                },
+            },
+        }
+    </script>
+    <!-- Incluir Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Meta Descripción para SEO -->
+    <meta name="description" content="Página principal de NUEVA RíO D'OR con funcionalidad CRUD para gestionar productos. Crea, lee, actualiza y elimina productos de manera sencilla.">
+    <!-- Estilos personalizados para la tabla responsiva -->
+    <style>
+        /* Estilos para hacer la tabla responsiva */
+        @media (max-width: 640px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                display: none;
+            }
+            tr {
+                margin-bottom: 1rem;
+                border: 1px solid #e5e7eb; /* Tailwind gray-200 */
+                border-radius: 0.5rem;
+                padding: 0.5rem;
+            }
+            td {
+                display: flex;
+                justify-content: space-between;
+                padding: 0.5rem 0;
+                border-bottom: 1px solid #e5e7eb; /* Tailwind gray-200 */
+            }
+            td:last-child {
+                border-bottom: none;
+            }
+            td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                width: 40%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-light min-h-screen flex flex-col items-center justify-start font-sans transition-colors duration-500">
+    <!-- Header de Navegación -->
+    <nav class="w-full bg-white shadow mb-8">
+        <div class="container mx-auto p-4 flex justify-between items-center">
+            <a href="#" class="text-primary font-bold text-xl">NUEVA RíO D'OR</a>
+            <!-- Enlace al Repositorio Principal o Menú Principal -->
+            <a href="https://github.com/tuusuario/tu-repositorio" target="_blank" class="text-primary hover:text-secondary flex items-center space-x-2">
+                <!-- Icono de Repositorio (puedes cambiarlo por otro icono si lo prefieres) -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0C5.372 0 0 5.372 0 12c0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577v-2.234c-3.338.724-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.744.083-.729.083-.729 1.205.084 1.838 1.237 1.838 1.237 1.07 1.834 2.809 1.304 3.495.997.108-.775.418-1.305.76-1.604-2.665-.305-5.467-1.332-5.467-5.93 0-1.31.468-2.38 1.235-3.22-.123-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23a11.52 11.52 0 013.003-.404c1.02.005 2.045.138 3.003.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.873.119 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.624-5.479 5.92.43.372.823 1.102.823 2.222v3.293c0 .322.218.694.825.576C20.565 21.8 24 17.303 24 12c0-6.628-5.372-12-12-12z"/>
+                </svg>
+                <span>Repositorio</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Contenedor Principal -->
+    <div class="container mx-auto p-6">
+        <!-- Título de la Página -->
+        <h1 class="text-4xl sm:text-5xl font-bold text-center text-primary mb-8">Gestión de Productos</h1>
+        
+        <!-- Botón para Agregar Nuevo Producto -->
+        <div class="flex justify-end mb-4">
+            <a href="agregar-producto.html" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300 flex items-center">
+                <!-- Icono de Agregar (Plus) -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Agregar Nuevo
+            </a>
+        </div>
+        
+        <!-- Tabla para Listar Productos -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white rounded-lg shadow-lg">
+                <thead>
+                    <tr>
+                        <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm font-semibold text-gray-700">Nombre</th>
+                        <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm font-semibold text-gray-700">Descripción</th>
+                        <th class="px-6 py-3 border-b-2 border-gray-300 text-left text-sm font-semibold text-gray-700">Precio ($)</th>
+                        <th class="px-6 py-3 border-b-2 border-gray-300 text-center text-sm font-semibold text-gray-700">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="product-table-body">
+                    <!-- Filas de productos generadas dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Modal de Confirmación -->
+    <div id="confirm-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg w-11/12 max-w-sm">
+            <div class="flex justify-between items-center p-4 border-b">
+                <h3 class="text-lg font-semibold text-gray-700">Confirmar Eliminación</h3>
+                <button id="close-modal" class="text-gray-500 hover:text-gray-700">
+                    <!-- Icono de Cerrar (X) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-700 mb-4">¿Estás seguro de que deseas eliminar este producto?</p>
+                <div class="flex justify-end space-x-4">
+                    <button id="cancel-delete" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-300">Cancelar</button>
+                    <button id="confirm-delete" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors duration-300">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script para Manejar el CRUD de Productos y el Modal -->
+    <script>
+        // Obtener referencias a los elementos del DOM
+        const productTableBody = document.getElementById('product-table-body');
+        const confirmModal = document.getElementById('confirm-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+        const cancelDeleteBtn = document.getElementById('cancel-delete');
+        const confirmDeleteBtn = document.getElementById('confirm-delete');
+
+        let productIdToDelete = null; // Variable para almacenar el ID del producto a eliminar
+
+        // Función para obtener los productos desde localStorage
+        function getProducts() {
+            const products = localStorage.getItem('products');
+            return products ? JSON.parse(products) : [];
+        }
+
+        // Función para guardar los productos en localStorage
+        function saveProducts(products) {
+            localStorage.setItem('products', JSON.stringify(products));
+        }
+
+        // Función para renderizar la tabla de productos
+        function renderProducts() {
+            const products = getProducts();
+            productTableBody.innerHTML = '';
+
+            if (products.length === 0) {
+                productTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">No hay productos registrados.</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            products.forEach(product => {
+                const tr = document.createElement('tr');
+                tr.classList.add('hover:bg-gray-100');
+
+                tr.innerHTML = `
+                    <td class="px-6 py-4 border-b border-gray-200" data-label="Nombre">${product.name}</td>
+                    <td class="px-6 py-4 border-b border-gray-200" data-label="Descripción">${product.description}</td>
+                    <td class="px-6 py-4 border-b border-gray-200" data-label="Precio ($)">$${parseFloat(product.price).toFixed(2)}</td>
+                    <td class="px-6 py-4 border-b border-gray-200 text-center" data-label="Acciones">
+                        <!-- Botón Editar como Icono -->
+                        <a href="editar-producto.html?id=${product.id}" class="text-yellow-500 hover:text-yellow-600 mr-3" aria-label="Editar Producto">
+                            <!-- Icono de Editar (Pencil) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5.197-5.197a1 1 0 00-1.414 0l-1.414 1.414a1 1 0 000 1.414L11 21l10-10-1.414-1.414L11 17z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 015.656 5.656l-1.414 1.414a4 4 0 01-5.656-5.656l1.414-1.414z" />
+                            </svg>
+                        </a>
+                        <!-- Botón Eliminar como Icono -->
+                        <button class="text-red-500 hover:text-red-600 delete-button" data-id="${product.id}" aria-label="Eliminar Producto">
+                            <!-- Icono de Eliminar (Trash) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3m4 0h-4" />
+                            </svg>
+                        </button>
+                    </td>
+                `;
+
+                productTableBody.appendChild(tr);
+            });
+        }
+
+        // Función para eliminar un producto
+        function deleteProduct(id) {
+            let products = getProducts();
+            products = products.filter(product => product.id !== id);
+            saveProducts(products);
+            renderProducts();
+        }
+
+        // Función para abrir el modal de confirmación
+        function openModal(id) {
+            productIdToDelete = id;
+            confirmModal.classList.remove('hidden');
+            // Prevenir scroll en el fondo
+            document.body.classList.add('overflow-hidden');
+        }
+
+        // Función para cerrar el modal de confirmación
+        function closeModal() {
+            productIdToDelete = null;
+            confirmModal.classList.add('hidden');
+            // Permitir scroll nuevamente
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        // Manejar el clic en los botones de Eliminar
+        productTableBody.addEventListener('click', (e) => {
+            if (e.target.closest('.delete-button')) {
+                const id = e.target.closest('.delete-button').getAttribute('data-id');
+                openModal(id);
+            }
+        });
+
+        // Manejar el clic en el botón de cerrar (X)
+        closeModalBtn.addEventListener('click', closeModal);
+
+        // Manejar el clic en el botón Cancelar dentro del modal
+        cancelDeleteBtn.addEventListener('click', closeModal);
+
+        // Manejar el clic en el botón Confirmar Eliminación dentro del modal
+        confirmDeleteBtn.addEventListener('click', () => {
+            if (productIdToDelete) {
+                deleteProduct(productIdToDelete);
+                closeModal();
+                alert('Producto eliminado exitosamente.');
+            }
+        });
+
+        // Cerrar el modal al hacer clic fuera del contenido del modal
+        window.addEventListener('click', (e) => {
+            if (e.target === confirmModal) {
+                closeModal();
+            }
+        });
+
+        // Renderizar los productos al cargar la página
+        document.addEventListener('DOMContentLoaded', renderProducts);
+    </script>
+</body>
+</html>

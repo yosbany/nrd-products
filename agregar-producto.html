@@ -1,0 +1,119 @@
+<!-- agregar-producto.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Producto - NUEVA RíO D'OR</title>
+    <!-- Incluir Tailwind CSS mediante Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuración de Tailwind CSS -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1D4ED8',   // Azul
+                        secondary: '#9333EA', // Morado
+                        accent: '#10B981',    // Verde
+                        light: '#F3F4F6',     // Gris claro para fondos
+                    },
+                    fontFamily: {
+                        sans: ['Roboto', 'sans-serif'], // Fuente personalizada
+                    },
+                },
+            },
+        }
+    </script>
+    <!-- Incluir Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Meta Descripción para SEO -->
+    <meta name="description" content="Página para agregar nuevos productos en NUEVA RíO D'OR. Crea productos de manera sencilla.">
+</head>
+<body class="bg-light min-h-screen flex flex-col items-center justify-start font-sans transition-colors duration-500">
+    <!-- Header de Navegación -->
+    <nav class="w-full bg-white shadow mb-8">
+        <div class="container mx-auto p-4 flex justify-between">
+            <a href="index.html" class="text-primary font-bold text-xl">NUEVA RíO D'OR</a>
+            <div>
+                <a href="index.html" class="text-primary hover:underline mr-4">Inicio</a>
+                <a href="index.html" class="text-primary hover:underline">CRUD de Productos</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenedor Principal -->
+    <div class="container mx-auto p-6">
+        <!-- Título de la Página -->
+        <h1 class="text-3xl sm:text-4xl font-bold text-center text-primary mb-6">Agregar Nuevo Producto</h1>
+        
+        <!-- Formulario para Agregar Producto -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <form id="agregar-form">
+                <div class="mb-4">
+                    <label for="name" class="block text-gray-700">Nombre del Producto</label>
+                    <input type="text" id="name" name="name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-primary" required>
+                </div>
+                <div class="mb-4">
+                    <label for="description" class="block text-gray-700">Descripción</label>
+                    <textarea id="description" name="description" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-primary" rows="3" required></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="price" class="block text-gray-700">Precio ($)</label>
+                    <input type="number" id="price" name="price" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-primary" step="0.01" min="0" required>
+                </div>
+                <button type="submit" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300">Agregar Producto</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Script para Manejar el Agregar de Productos -->
+    <script>
+        const agregarForm = document.getElementById('agregar-form');
+
+        // Función para obtener los productos desde localStorage
+        function getProducts() {
+            const products = localStorage.getItem('products');
+            return products ? JSON.parse(products) : [];
+        }
+
+        // Función para guardar los productos en localStorage
+        function saveProducts(products) {
+            localStorage.setItem('products', JSON.stringify(products));
+        }
+
+        // Función para generar una ID única para cada producto
+        function generateId() {
+            return '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Manejar el envío del formulario para agregar un producto
+        agregarForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = agregarForm.name.value.trim();
+            const description = agregarForm.description.value.trim();
+            const price = agregarForm.price.value.trim();
+
+            if (name === '' || description === '' || price === '') {
+                alert('Por favor, completa todos los campos.');
+                return;
+            }
+
+            const newProduct = {
+                id: generateId(),
+                name,
+                description,
+                price
+            };
+
+            const products = getProducts();
+            products.push(newProduct);
+            saveProducts(products);
+
+            // Redirigir a la página principal después de agregar
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>

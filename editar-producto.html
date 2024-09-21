@@ -1,0 +1,160 @@
+<!-- editar-producto.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Producto - NUEVA RíO D'OR</title>
+    <!-- Incluir Tailwind CSS mediante Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuración de Tailwind CSS -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1D4ED8',   // Azul
+                        secondary: '#9333EA', // Morado
+                        accent: '#10B981',    // Verde
+                        light: '#F3F4F6',     // Gris claro para fondos
+                    },
+                    fontFamily: {
+                        sans: ['Roboto', 'sans-serif'], // Fuente personalizada
+                    },
+                },
+            },
+        }
+    </script>
+    <!-- Incluir Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Meta Descripción para SEO -->
+    <meta name="description" content="Página para editar productos en NUEVA RíO D'OR. Actualiza los detalles de tus productos de manera sencilla.">
+</head>
+<body class="bg-light min-h-screen flex flex-col items-center justify-start font-sans transition-colors duration-500">
+    <!-- Header de Navegación -->
+    <nav class="w-full bg-white shadow mb-8">
+        <div class="container mx-auto p-4 flex justify-between">
+            <a href="index.html" class="text-primary font-bold text-xl">NUEVA RíO D'OR</a>
+            <div>
+                <a href="index.html" class="text-primary hover:underline mr-4">Inicio</a>
+                <a href="index.html" class="text-primary hover:underline">CRUD de Productos</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenedor Principal -->
+    <div class="container mx-auto p-6">
+        <!-- Título de la Página -->
+        <h1 class="text-3xl sm:text-4xl font-bold text-center text-primary mb-6">Editar Producto</h1>
+        
+        <!-- Formulario para Editar Producto -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <form id="editar-form">
+                <div class="mb-4">
+                    <label for="name" class="block text-gray-700">Nombre del Producto</label>
+                    <input type="text" id="name" name="name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-primary" required>
+                </div>
+                <div class="mb-4">
+                    <label for="description" class="block text-gray-700">Descripción</label>
+                    <textarea id="description" name="description" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-primary" rows="3" required></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="price" class="block text-gray-700">Precio ($)</label>
+                    <input type="number" id="price" name="price" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-primary" step="0.01" min="0" required>
+                </div>
+                <input type="hidden" id="product-id">
+                <button type="submit" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300">Actualizar Producto</button>
+                <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-300 ml-2" id="cancel-button">Cancelar</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Script para Manejar el Editar de Productos -->
+    <script>
+        const editarForm = document.getElementById('editar-form');
+        const cancelButton = document.getElementById('cancel-button');
+
+        // Función para obtener los productos desde localStorage
+        function getProducts() {
+            const products = localStorage.getItem('products');
+            return products ? JSON.parse(products) : [];
+        }
+
+        // Función para guardar los productos en localStorage
+        function saveProducts(products) {
+            localStorage.setItem('products', JSON.stringify(products));
+        }
+
+        // Función para obtener el parámetro 'id' de la URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Función para renderizar los datos del producto en el formulario
+        function loadProductData(id) {
+            const products = getProducts();
+            const product = products.find(p => p.id === id);
+            if (!product) {
+                alert('Producto no encontrado.');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            document.getElementById('name').value = product.name;
+            document.getElementById('description').value = product.description;
+            document.getElementById('price').value = product.price;
+            document.getElementById('product-id').value = product.id;
+        }
+
+        // Función para actualizar el producto
+        function updateProduct(updatedProduct) {
+            let products = getProducts();
+            products = products.map(product => product.id === updatedProduct.id ? updatedProduct : product);
+            saveProducts(products);
+            alert('Producto actualizado exitosamente.');
+            window.location.href = 'index.html';
+        }
+
+        // Manejar el envío del formulario para editar un producto
+        editarForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = editarForm.name.value.trim();
+            const description = editarForm.description.value.trim();
+            const price = editarForm.price.value.trim();
+            const id = editarForm['product-id'].value;
+
+            if (name === '' || description === '' || price === '') {
+                alert('Por favor, completa todos los campos.');
+                return;
+            }
+
+            const updatedProduct = {
+                id,
+                name,
+                description,
+                price
+            };
+
+            updateProduct(updatedProduct);
+        });
+
+        // Manejar el clic en el botón Cancelar
+        cancelButton.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+        // Cargar los datos del producto al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            const productId = getQueryParam('id');
+            if (!productId) {
+                alert('No se ha proporcionado el ID del producto.');
+                window.location.href = 'index.html';
+                return;
+            }
+            loadProductData(productId);
+        });
+    </script>
+</body>
+</html>
