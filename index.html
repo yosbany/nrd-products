@@ -27,8 +27,6 @@
     </script>
     <!-- Incluir Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Meta Descripción para SEO -->
-    <meta name="description" content="Página principal de NUEVA RíO D'OR con funcionalidad CRUD para gestionar productos. Crea, lee, actualiza y elimina productos de manera sencilla.">
     <!-- Estilos personalizados para la tabla responsiva -->
     <style>
         /* Estilos para hacer la tabla responsiva */
@@ -48,6 +46,7 @@
             td {
                 display: flex;
                 justify-content: space-between;
+                align-items: center;
                 padding: 0.5rem 0;
                 border-bottom: 1px solid #e5e7eb; /* Tailwind gray-200 */
             }
@@ -57,7 +56,12 @@
             td::before {
                 content: attr(data-label);
                 font-weight: 600;
-                width: 40%;
+                text-align: left; /* Alinea los labels a la izquierda */
+                flex: 1;
+            }
+            td > * {
+                text-align: right; /* Alinea los valores o iconos a la derecha */
+                flex: 1;
             }
         }
     </style>
@@ -67,7 +71,7 @@
     <nav class="w-full bg-white shadow mb-8">
         <div class="container mx-auto p-4 flex justify-between items-center">
             <a href="#" class="text-primary font-bold text-xl">NUEVA RíO D'OR</a>
-            <a href="https://tu-repo-main.github.io" class="text-secondary font-semibold hover:underline">Menú Principal</a>
+            <a href="https://github.com/yosbany/nrd-main" class="text-secondary font-semibold hover:underline">Menú Principal</a>
         </div>
     </nav>
 
@@ -237,7 +241,6 @@
             if (productIdToDelete) {
                 deleteProduct(productIdToDelete);
                 closeModal();
-                alert('Producto eliminado exitosamente.');
             }
         });
 
